@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "geometrydash-ify",
+	"version": "${version}",
+	"name": "GeometryDash-ify",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Weebify"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/geometrydash-ify/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"wb.weebify.geometrydash.GeometryDashify"
+		],
+		"client": [
+			"wb.weebify.geometrydash.GeometryDashifyClient"
+		]
+	},
+	"mixins": [
+		"geometrydash-ify.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.3",
+		"minecraft": "~1.21",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

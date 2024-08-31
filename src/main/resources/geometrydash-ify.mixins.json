@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "wb.weebify.geometrydash.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "LogoDrawerMixin",
+    "TitleScreenMixin"
+  ]
+}
