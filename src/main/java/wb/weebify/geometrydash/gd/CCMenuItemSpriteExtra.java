@@ -82,8 +82,8 @@ public class CCMenuItemSpriteExtra extends ClickableWidget  {
             this.deltaScale = this.targetScale - this.beginScale;
         }
 
-            if (this.deltaNum < 18) this.deltaNum++;
-            this.currentScale = this.beginScale + this.deltaScale * this.bounceTime(this.deltaNum / 18.0f);
+        if (this.deltaNum < 18) this.deltaNum++;
+        this.currentScale = this.beginScale + this.deltaScale * this.bounceTime(this.deltaNum / 18.0f);
 
         RenderSystem.enableBlend(); // probably transparency
         RenderSystem.enableDepthTest(); // what does this even do
@@ -131,10 +131,17 @@ public class CCMenuItemSpriteExtra extends ClickableWidget  {
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         setAllIsDown(false);
-//        GeometryDashify.LOGGER.warn("{}: {} {}", texture, mouseDownOnWidget, this.hovered);
         for (CCMenuItemSpriteExtra item : ccMenuItems) {
             if (mouseDownOnWidget && item.hovered) {
                 mouseDownOnWidget = false;
+                item.isScaleUp = false;
+
+                item.targetScale = item.baseScale;
+                item.beginScale = item.currentScale;
+
+                item.deltaNum = 0;
+                item.deltaScale = item.targetScale - item.beginScale;
+
                 item.onRelease(mouseX, mouseY);
                 return true;
             }

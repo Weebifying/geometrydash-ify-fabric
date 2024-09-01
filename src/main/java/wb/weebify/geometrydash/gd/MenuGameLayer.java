@@ -13,8 +13,8 @@ import wb.weebify.geometrydash.GeometryDashify;
 
 @Environment(EnvType.CLIENT)
 public class MenuGameLayer {
-    public static final Identifier BACKGROUND_TEXTURE = Identifier.of(GeometryDashify.MOD_ID, "textures/game_bg_01_001.png");
-    public static final Identifier GROUND_TEXTURE = Identifier.of(GeometryDashify.MOD_ID, "textures/ground_square_01_001.png");
+    public static final Identifier BACKGROUND_TEXTURE = Identifier.of(GeometryDashify.MOD_ID, "textures/bg/game_bg_01_001.png");
+    public static final Identifier GROUND_TEXTURE = Identifier.of(GeometryDashify.MOD_ID, "textures/bg/ground_square_01_001.png");
     private final MinecraftClient client;
     public ccColor3B startColor;
     public ccColor3B currentColor;

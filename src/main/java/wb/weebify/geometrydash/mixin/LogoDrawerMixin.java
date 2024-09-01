@@ -16,7 +16,7 @@ import wb.weebify.geometrydash.GeometryDashify;
 @Mixin(LogoDrawer.class)
 public abstract class LogoDrawerMixin {
     @Unique
-    private static final Identifier GD_LOGO_TEXTURE = Identifier.of(GeometryDashify.MOD_ID, "textures/gj_logo_001.png");
+    private static final Identifier GD_LOGO_TEXTURE = Identifier.of(GeometryDashify.MOD_ID, "textures/bg/gj_logo_001.png");
 
     @Inject(at = @At("HEAD"), method = "draw(Lnet/minecraft/client/gui/DrawContext;IFI)V", cancellable = true)
     private void onDraw(DrawContext context, int screenWidth, float alpha, int y, CallbackInfo ci) {
