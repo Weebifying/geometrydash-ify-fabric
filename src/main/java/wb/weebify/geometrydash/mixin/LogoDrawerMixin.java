@@ -25,7 +25,7 @@ public abstract class LogoDrawerMixin {
             RenderSystem.enableBlend();
             int logoWidth = Math.round(screenWidth * 0.75f);
             int logoHeight = Math.round(logoWidth / 8.25f);
-            context.drawTexture(GD_LOGO_TEXTURE, (screenWidth - logoWidth) / 2, 85 - logoHeight/2, 0, 0, 0, logoWidth, logoHeight, logoWidth, logoHeight);
+            context.drawTexture(GD_LOGO_TEXTURE, (screenWidth - logoWidth) / 2, Math.round(client.currentScreen.height * 0.15625f) - logoHeight/2, 0, 0, 0, logoWidth, logoHeight, logoWidth, logoHeight);
 
             ci.cancel();
         }

@@ -9,9 +9,8 @@ import wb.weebify.geometrydash.gd.MenuGameLayer;
 public class GeometryDashify implements ModInitializer {
 	public static final String MOD_ID = "geometrydash-ify";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-	private final MenuGameLayer MENU_GAME_LAYER = new MenuGameLayer();
 
-		@Override
+	@Override
 	public void onInitialize() {
 
 	}

@@ -1,12 +1,17 @@
 package wb.weebify.geometrydash.mixin;
 
+import com.terraformersmc.modmenu.gui.ModsScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerWarningScreen;
+import net.minecraft.client.gui.screen.option.AccessibilityOptionsScreen;
+import net.minecraft.client.gui.screen.option.LanguageOptionsScreen;
+import net.minecraft.client.gui.screen.option.OptionsScreen;
 import net.minecraft.client.gui.screen.world.SelectWorldScreen;
+import net.minecraft.client.realms.gui.screen.RealmsMainScreen;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,32 +37,75 @@ public abstract class TitleScreenMixin extends Screen {
 
     @Inject(at = @At("HEAD"), method = "init", cancellable = true)
     public void onInit(CallbackInfo ci) {
-
-        GeometryDashifyClient.MENU_GAME_LAYER = new MenuGameLayer();
+        GeometryDashifyClient.MENU_GAME_LAYER = new MenuGameLayer(MinecraftClient.getInstance());
         MinecraftClient client = MinecraftClient.getInstance();
-        TitleScreen thisInst = (TitleScreen)(Object)this;
+        TitleScreen thisInst = (TitleScreen)(Object) this;
 
         CCMenuItemSpriteExtra.ccMenuItems.clear();
 
-        this.addDrawableChild(
+        CCMenuItemSpriteExtra singleplayerButton = this.addDrawableChild(
                 CCMenuItemSpriteExtra.builder(Identifier.of(GeometryDashify.MOD_ID, "textures/gj_play_btn_001.png"), (button) -> client.setScreen(new SelectWorldScreen(thisInst)))
-                        .dimensions(Math.round(thisInst.width * 0.5f), thisInst.height/2 - 17, Math.round(thisInst.height * 0.35f), Math.round(thisInst.height * 0.35f))
+                        .dimensions(Math.round(thisInst.width * 0.5f), Math.round(thisInst.height * (1.f/2 - 17.f/540)), Math.round(thisInst.height * 0.35f), Math.round(thisInst.height * 0.35f))
                         .build()
         );
 
-        this.addDrawableChild(
+        CCMenuItemSpriteExtra multiplayerButton = this.addDrawableChild(
                 CCMenuItemSpriteExtra.builder(Identifier.of(GeometryDashify.MOD_ID, "textures/gj_creator_btn_001.png"), (button) -> {
                             Screen screen = client.options.skipMultiplayerWarning ? new MultiplayerScreen(thisInst) : new MultiplayerWarningScreen(thisInst);
                             client.setScreen(screen);
                         })
-                        .dimensions(Math.round(thisInst.width * 0.69f), thisInst.height/2 - 17, Math.round(thisInst.height * 0.22f), Math.round(thisInst.height * 0.22f))
+                        .dimensions(singleplayerButton.x + Math.round(thisInst.height * 0.34f), singleplayerButton.y, Math.round(thisInst.height * 0.22f), Math.round(thisInst.height * 0.22f))
+                        .build()
+        );
+
+        CCMenuItemSpriteExtra realmsButton = this.addDrawableChild(
+                CCMenuItemSpriteExtra.builder(Identifier.of(GeometryDashify.MOD_ID, "textures/gj_garage_btn_001.png"), (button) -> client.setScreen(new RealmsMainScreen(thisInst)))
+                        .dimensions(singleplayerButton.x - Math.round(thisInst.height * 0.34f), singleplayerButton.y, Math.round(thisInst.height * 0.22f), Math.round(thisInst.height * 0.22f))
+                        .build()
+        );
+
+        int bottomY = Math.round(thisInst.height * 0.859375f); // (1 - 0.140625f)
+        float baseBottom = thisInst.height * 0.168f;
+        int bottomBaseWidth = Math.round(baseBottom / 215 * 202);
+        int bottomBaseHeight = Math.round(baseBottom);
+        int distanceX = Math.round(baseBottom + 17.f / client.options.getGuiScale().getValue());
+
+        CCMenuItemSpriteExtra languageButton = this.addDrawableChild(
+                CCMenuItemSpriteExtra.builder(Identifier.of(GeometryDashify.MOD_ID, "textures/gj_ach_btn_001.png"), (button) -> client.setScreen(new LanguageOptionsScreen(thisInst, client.options, client.getLanguageManager())))
+                        .dimensions(thisInst.width / 2 - distanceX*3/2, bottomY, bottomBaseWidth, bottomBaseHeight)
+                        .build()
+        );
+
+        CCMenuItemSpriteExtra settingsButton = this.addDrawableChild(
+                CCMenuItemSpriteExtra.builder(Identifier.of(GeometryDashify.MOD_ID, "textures/gj_options_btn_001.png"), (button) -> client.setScreen(new OptionsScreen(thisInst, client.options)))
+                        .dimensions(thisInst.width / 2 - distanceX/2, bottomY, bottomBaseWidth, bottomBaseHeight)
+                        .build()
+        );
+
+        CCMenuItemSpriteExtra accessibilityButton = this.addDrawableChild(
+                CCMenuItemSpriteExtra.builder(Identifier.of(GeometryDashify.MOD_ID, "textures/gj_stats_btn_001.png"), (button) -> client.setScreen(new AccessibilityOptionsScreen(thisInst, client.options)))
+                        .dimensions(thisInst.width / 2 + distanceX/2, bottomY, bottomBaseWidth, bottomBaseHeight)
+                        .build()
+        );
+
+        CCMenuItemSpriteExtra modsButton = this.addDrawableChild(
+                CCMenuItemSpriteExtra.builder(Identifier.of(GeometryDashify.MOD_ID, "textures/gj_geode_btn_001.png"), (button) -> client.setScreen(new ModsScreen(thisInst)))
+                        .dimensions(thisInst.width / 2 + distanceX*3/2, bottomY, bottomBaseWidth, bottomBaseHeight)
+                        .build()
+        );
+
+        float baseQuit = thisInst.height * 0.104f;
+
+        CCMenuItemSpriteExtra quitButton = this.addDrawableChild(
+                CCMenuItemSpriteExtra.builder(Identifier.of(GeometryDashify.MOD_ID, "textures/gj_close_btn_001.png"), (button) -> client.scheduleStop())
+                        .dimensions(3 + Math.round(baseQuit / 190 * 184)/2, 3 + Math.round(baseQuit)/2, Math.round(baseQuit / 190 * 184), Math.round(baseQuit))
                         .build()
         );
 
         ci.cancel();
     }
 
-    @Inject(at = @At("TAIL"), method = "renderPanoramaBackground", cancellable = true)
+    @Inject(at = @At("HEAD"), method = "renderPanoramaBackground", cancellable = true)
     protected void renderPanoramaBackground(DrawContext context, float delta, CallbackInfo ci) {
         GeometryDashifyClient.MENU_GAME_LAYER.render(context, this.width, this.height, delta);
 

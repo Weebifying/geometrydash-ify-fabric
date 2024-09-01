@@ -2,6 +2,7 @@ package wb.weebify.geometrydash.gd;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
@@ -14,6 +15,7 @@ import wb.weebify.geometrydash.GeometryDashify;
 public class MenuGameLayer {
     public static final Identifier BACKGROUND_TEXTURE = Identifier.of(GeometryDashify.MOD_ID, "textures/game_bg_01_001.png");
     public static final Identifier GROUND_TEXTURE = Identifier.of(GeometryDashify.MOD_ID, "textures/ground_square_01_001.png");
+    private final MinecraftClient client;
     public ccColor3B startColor;
     public ccColor3B currentColor;
     public ccColor3B endColor;
@@ -21,10 +23,11 @@ public class MenuGameLayer {
     public int colID = 1;
     private int count = 0;
 
-    public int groundX = 0;
-    public int bgX = 0;
+    public float groundX = 0;
+    public float bgX = 0;
 
-    public MenuGameLayer() {
+    public MenuGameLayer(MinecraftClient client) {
+        this.client = client;
         startColor = getBGColor(0);
         currentColor = getBGColor(0);
         endColor = getBGColor(1);
@@ -92,23 +95,26 @@ public class MenuGameLayer {
 
         context.setShaderColor(currentColor.r / 0xFF, currentColor.g / 0xFF, currentColor.b / 0xFF, 1.0F);
 
+        float bgSpeed = 2.f / client.options.getGuiScale().getValue();
+        float groundSpeed = 16.0f / client.options.getGuiScale().getValue();
+
         int bgHeight = Math.round((float)height / 0.625f); // 864
         int bgWidth = bgHeight * 3;
-        bgX += 1;
+        bgX += bgSpeed;
         if (bgX > bgHeight) {
             bgX = 0;
         }
-        context.drawTexture(BACKGROUND_TEXTURE, -bgX, height - bgHeight, 0, 0, 0, bgWidth, bgHeight, bgHeight, bgHeight);
+        context.drawTexture(BACKGROUND_TEXTURE, Math.round(-bgX), height - bgHeight, 0, 0, 0, bgWidth, bgHeight, bgHeight, bgHeight);
 
         int groundHeight = Math.round((float)height * 0.4f); // 216
         int groundWidth = groundHeight * 6;
         int k = Math.round(90.f / 320 * height);
         int groundTopY = height - k;
-        groundX += 8;
+        groundX += groundSpeed;
         if (groundX > groundHeight) {
             groundX = 0;
         }
-        context.drawTexture(GROUND_TEXTURE, -groundX, groundTopY, 0, 0, 0, groundWidth, groundHeight, groundHeight, groundHeight);
+        context.drawTexture(GROUND_TEXTURE, Math.round(-groundX), groundTopY, 0, 0, 0, groundWidth, groundHeight, groundHeight, groundHeight);
 
         context.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
