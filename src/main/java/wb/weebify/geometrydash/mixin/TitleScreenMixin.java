@@ -1,6 +1,7 @@
 package wb.weebify.geometrydash.mixin;
 
 import com.terraformersmc.modmenu.gui.ModsScreen;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -24,7 +25,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import wb.weebify.geometrydash.GeometryDashify;
 import wb.weebify.geometrydash.GeometryDashifyClient;
 import wb.weebify.geometrydash.gd.CCMenuItemSpriteExtra;
+import wb.weebify.geometrydash.gd.FntFontDrawer;
 import wb.weebify.geometrydash.gd.MenuGameLayer;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Mixin(TitleScreen.class)
 public abstract class TitleScreenMixin extends Screen {
@@ -173,8 +181,9 @@ public abstract class TitleScreenMixin extends Screen {
         ci.cancel();
     }
 
-//    @Inject(at = @At("TAIL"), method = "render")
-//    public void onRender(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-//        GeometryDashify.LOGGER.info("{}", CCMenuItemSpriteExtra.mouseDownOnWidget);
-//    }
+    @Inject(at = @At("TAIL"), method = "render")
+    public void onRender(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+        GeometryDashify.BIGFONT_DRAWER.drawText(context,"we ballin", 5, height/2, 1.0f);
+        GeometryDashify.GOLDFONT_DRAWER.drawText(context,"or are we", 5, height/2 + 50, 1.0f);
+    }
 }

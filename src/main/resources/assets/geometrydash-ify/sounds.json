@@ -1,0 +1,10 @@
+{
+  "soggy_loop": {
+    "sounds": [
+      {
+        "name": "geometrydash-ify:menu_loop",
+        "stream": false
+      }
+    ]
+  }
+}
