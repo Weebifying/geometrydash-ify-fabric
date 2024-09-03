@@ -1,7 +1,6 @@
 package wb.weebify.geometrydash.mixin;
 
 import com.terraformersmc.modmenu.gui.ModsScreen;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -13,6 +12,7 @@ import net.minecraft.client.gui.screen.option.LanguageOptionsScreen;
 import net.minecraft.client.gui.screen.option.OptionsScreen;
 import net.minecraft.client.gui.screen.world.SelectWorldScreen;
 import net.minecraft.client.realms.gui.screen.RealmsMainScreen;
+import net.minecraft.client.session.Session;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
@@ -25,14 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import wb.weebify.geometrydash.GeometryDashify;
 import wb.weebify.geometrydash.GeometryDashifyClient;
 import wb.weebify.geometrydash.gd.CCMenuItemSpriteExtra;
-import wb.weebify.geometrydash.gd.FntFontDrawer;
 import wb.weebify.geometrydash.gd.MenuGameLayer;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Mixin(TitleScreen.class)
 public abstract class TitleScreenMixin extends Screen {
@@ -106,14 +99,21 @@ public abstract class TitleScreenMixin extends Screen {
     }
 
     @Unique
-    private void setupCloseMenu(TitleScreen thisInst) {
+    private void setupEtc(TitleScreen thisInst) {
         float baseQuit = thisInst.height * 0.104f;
-
         CCMenuItemSpriteExtra quitButton = this.addDrawableChild(
                 CCMenuItemSpriteExtra.builder(Identifier.of(GeometryDashify.MOD_ID, "textures/etc/gj_close_btn_001.png"), (button) -> client.scheduleStop())
                         .dimensions(3 + Math.round(baseQuit / 190 * 184)/2, 3 + Math.round(baseQuit)/2, Math.round(baseQuit / 190 * 184), Math.round(baseQuit))
                         .build()
         );
+
+        float baseProfile = (float) (thisInst.height * 58) / 320;
+        CCMenuItemSpriteExtra profileButton = this.addDrawableChild(
+                CCMenuItemSpriteExtra.builder(Identifier.of(GeometryDashify.MOD_ID, "textures/etc/gj_profile_button_001.png"), (button) -> Util.getOperatingSystem().open("https://www.youtube.com/watch?v=dQw4w9WgXcQ"))
+                        .dimensions(Math.round(43.5f / 320 * thisInst.height), thisInst.height - Math.round(105.f / 320 * thisInst.height), Math.round(baseProfile / 58 * 55), Math.round(baseProfile))
+                        .build()
+        );
+
     }
 
     @Unique
@@ -168,8 +168,8 @@ public abstract class TitleScreenMixin extends Screen {
         CCMenuItemSpriteExtra.ccMenuItems.clear();
         setupMainButtons(thisInst);
         setupBottomMenu(thisInst);
-        setupCloseMenu(thisInst);
         setupSocialsMenu(thisInst);
+        setupEtc(thisInst);
 
         ci.cancel();
     }
@@ -183,7 +183,16 @@ public abstract class TitleScreenMixin extends Screen {
 
     @Inject(at = @At("TAIL"), method = "render")
     public void onRender(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        GeometryDashify.BIGFONT_DRAWER.drawText(context,"we ballin", 5, height/2, 1.0f);
-        GeometryDashify.GOLDFONT_DRAWER.drawText(context,"or are we", 5, height/2 + 50, 1.0f);
+        Session session = client.getSession();
+
+        float widthLimit = 70.f / 320 * height;
+        float defaultScale = 0.7f;
+
+        float labelWidth = GeometryDashify.GOLDFONT_DRAWER.getTextWidthFor(session.getUsername());
+        float labelHeight = GeometryDashify.GOLDFONT_DRAWER.getTextHeight();
+        float scale = Math.min(defaultScale, widthLimit / labelWidth);
+
+
+        GeometryDashify.GOLDFONT_DRAWER.drawText(context, session.getUsername(), 47.f/320*height - labelWidth*scale/2, height * (1.f - 141.f/320) - labelHeight*scale/4, 2, scale);
     }
 }

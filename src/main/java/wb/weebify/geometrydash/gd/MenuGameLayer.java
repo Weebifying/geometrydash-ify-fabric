@@ -22,6 +22,7 @@ public class MenuGameLayer {
 
     public int colID = 1;
     private int count = 0;
+    private int waitCount = 0;
 
     public float groundX = 0;
     public float bgX = 0;
@@ -77,21 +78,27 @@ public class MenuGameLayer {
     public void render(DrawContext context, int width, int height, float tickDelta) {
 
         count++;
-        if (count == 300) {
-            count = 0;
-            colID++;
-            if (colID > 7) {
-                colID = 0;
+        if (count >= 300) {
+            waitCount++;
+            if (waitCount >= 60) {
+                count = 0;
+                waitCount = 0;
+                colID++;
+                if (colID > 7) {
+                    colID = 0;
+                }
+                startColor = endColor;
+                endColor = getBGColor(colID);
             }
-            startColor = endColor;
-            endColor = getBGColor(colID);
         }
-        float stepR = (endColor.r - startColor.r) / 300;
-        float stepG = (endColor.g - startColor.g) / 300;
-        float stepB = (endColor.b - startColor.b) / 300;
-        currentColor.r += stepR;
-        currentColor.g += stepG;
-        currentColor.b += stepB;
+        if (waitCount == 0) {
+            float stepR = (endColor.r - startColor.r) / 300;
+            float stepG = (endColor.g - startColor.g) / 300;
+            float stepB = (endColor.b - startColor.b) / 300;
+            currentColor.r += stepR;
+            currentColor.g += stepG;
+            currentColor.b += stepB;
+        }
 
         context.setShaderColor(currentColor.r / 0xFF, currentColor.g / 0xFF, currentColor.b / 0xFF, 1.0F);
 
